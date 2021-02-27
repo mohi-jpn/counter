@@ -8,19 +8,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+
     <link rel="stylesheet" href="css/style.css">
     <title>カウンター</title>
 </head>
 
 <body>
     <div class="container">
-        <p id="score">0</p>
+        <header>
+            <h1>カウンター</h1>
+        </header>
+        計測したタイミングを可視化できます
+    </div>
 
-        <canvas id="myChart"></canvas>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
+    <div class="container">
+        <div>
+            <canvas id="myChart"></canvas>
+        </div>
 
         <div class="display-btn">
-            <button type="button" id="display" class="btn btn-info">グラフ表示</button>
+            <button type="button" id="display" class="btn btn-outline-info" disabled>グラフ表示</button>
+        </div>
+
+        <div class="result">
+            <p>スコア</p>
+            <p id="score">0</p>
         </div>
 
         <div class="d-grid gap-2">
@@ -45,34 +60,33 @@
     <script>
         let history = [];
         let data = [];
+        let myChart;
 
         document.getElementById('count').addEventListener('click', function () {
             const time = Date.now();
 
             document.getElementById('score').innerHTML++;
             history.push(time);
+            document.getElementById('display').disabled = false;
         });
 
         document.getElementById('reset').addEventListener('click', function () {
             document.getElementById('score').innerHTML = 0;
             history.length = 0;
             data.length = 0;
-            generateGraph();
+            myChart.destroy();
+            document.getElementById('display').disabled = true;
         });
 
         document.getElementById('display').addEventListener('click', function () {
             const start_time = history[0];
-            data = history.map(time => {
+            data = history.map((time) => {
                 return {
                     x: time - start_time,
-                    y: 10,
+                    y: 0,
                 }
             });
-            generateGraph();
-        });
-
-        const generateGraph = () => {
-            new Chart(ctx, {
+            myChart = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
@@ -84,7 +98,7 @@
                 },
                 options: options,
             });
-        }
+        });
 
         let ctx = document.getElementById("myChart");
         let options = {
@@ -97,7 +111,7 @@
             tooltips: {
                 callbacks: {
                     label: (tooltipItem, data) => {
-                        return `time: ${tooltipItem.label}`;
+                        return `score: ${tooltipItem.index + 1}, time: ${tooltipItem.label}`;
                     },
                 },
             },
@@ -108,9 +122,10 @@
                         labelString: '時間(ミリ秒)',
                     },
                     gridLines: {
-                        display: false,
-                        color: '#f3f3f3',
-                        zeroLineColor: '#ddd'
+                        display: true,
+                        color: '#ffffff',
+                        zeroLineColor: '#ddd',
+                        zeroLineWidth: 2,
                     },
                     ticks: {
                         fontColor: '#333',
@@ -122,16 +137,30 @@
                         display: false,
                     },
                     gridLines: {
-                        color: '#f3f3f3',
-                        zeroLineColor: '#ddd'
+                        color: '#ffffff',
+                        zeroLineColor: '#ddd',
+                        zeroLineWidth: 2,
                     },
                     ticks: {
                         display: false,
                         fontColor: '#333',
-                        min: 0,
-                        max: 20,
+                        min: -5,
+                        max: 5,
                     }
                 }]
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x'
+                    },
+                    zoom: {
+                        enabled: true,
+                        mode: 'x',
+                        sensitivity: 3
+                    }
+                }
             }
         };
 
