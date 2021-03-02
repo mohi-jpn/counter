@@ -50,7 +50,7 @@
               <div class="modal-body">
 
               <div>
-                <canvas id="myChart"></canvas>
+                <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
               </div>
 
               </div>
@@ -103,7 +103,7 @@
                 xAxes: [{
                     scaleLabel: {
                         display: true,
-                        labelString: '時間(ミリ秒)',
+                        labelString: '時間(秒)',
                     },
                     gridLines: {
                         display: true,
@@ -179,7 +179,7 @@
             const start_time = history[0];
             data = history.map((time) => {
                 return {
-                    x: time - start_time,
+                    x: (time - start_time) / 1000,
                     y: 0,
                 }
             });
