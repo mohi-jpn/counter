@@ -82,49 +82,10 @@
     </div>
 
     <script>
+        const ctx = document.getElementById("myChart");
         let history = [];
         let data = [];
-        let myChart;
-
-        document.getElementById('count').addEventListener('click', function () {
-            const time = Date.now();
-
-            document.getElementById('score').innerHTML++;
-            history.push(time);
-            document.getElementById('display').disabled = false;
-        });
-
-        document.getElementById('reset').addEventListener('click', function () {
-            document.getElementById('score').innerHTML = 0;
-            history.length = 0;
-            data.length = 0;
-            myChart.destroy();
-        });
-
-        document.getElementById('display').addEventListener('click', function () {
-            const start_time = history[0];
-            data = history.map((time) => {
-                return {
-                    x: time - start_time,
-                    y: 0,
-                }
-            });
-            myChart = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                        backgroundColor: 'rgba(255, 48, 32, 0.45)',
-                        borderColor: 'rgba(255, 48, 32, 0.5)',
-                        pointRadius: 10,
-                        data: data,
-                    }],
-                },
-                options: options,
-            });
-        });
-
-        let ctx = document.getElementById("myChart");
-        let options = {
+        const options = {
             title: {
                 display: false,
             },
@@ -186,6 +147,45 @@
                 }
             }
         };
+        let myChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    backgroundColor: 'rgba(255, 48, 32, 0.45)',
+                    borderColor: 'rgba(255, 48, 32, 0.5)',
+                    pointRadius: 10,
+                    data: data,
+                }],
+            },
+            options: options,
+        });
+
+        document.getElementById('count').addEventListener('click', function () {
+            const time = Date.now();
+
+            document.getElementById('score').innerHTML++;
+            history.push(time);
+        });
+
+        document.getElementById('reset').addEventListener('click', function () {
+            document.getElementById('score').innerHTML = 0;
+            history.length = 0;
+            data.length = 0;
+            myChart.data.datasets[0].data = data;
+            myChart.update();
+        });
+
+        document.getElementById('display').addEventListener('click', function () {
+            const start_time = history[0];
+            data = history.map((time) => {
+                return {
+                    x: time - start_time,
+                    y: 0,
+                }
+            });
+            myChart.data.datasets[0].data = data;
+            myChart.update();
+        });
 
     </script>
 </body>
