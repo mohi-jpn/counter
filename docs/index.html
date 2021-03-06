@@ -14,6 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
+    <script src="js/options.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <title>カウンター</title>
@@ -87,69 +88,6 @@
         const ctx = document.getElementById("myChart");
         let history = [[]];
         let data = [];
-        const options = {
-            title: {
-                display: false,
-            },
-            legend: {
-                display: true,
-            },
-            tooltips: {
-                callbacks: {
-                    label: (tooltipItem, data) => {
-                        return `score: ${tooltipItem.index + 1}, time: ${tooltipItem.label}`;
-                    },
-                },
-            },
-            scales: {
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: '時間(秒)',
-                    },
-                    gridLines: {
-                        display: true,
-                        color: '#ffffff',
-                        zeroLineColor: '#ddd',
-                        zeroLineWidth: 2,
-                    },
-                    ticks: {
-                        fontColor: '#333',
-                    },
-                }],
-                yAxes: [{
-                    scaleLabel: {
-                        display: false,
-                    },
-                    gridLines: {
-                        zeroLineColor: '#ddd',
-                        zeroLineWidth: 2,
-                    },
-                    ticks: {
-                        display: false,
-                        min: -5,
-                        max: 5,
-                        stepSize: 5,
-                    }
-                }]
-            },
-            plugins: {
-                zoom: {
-                    pan: {
-                        enabled: true,
-                        mode: 'x'
-                    },
-                    zoom: {
-                        enabled: true,
-                        mode: 'x',
-                        sensitivity: 3
-                    }
-                },
-                colorschemes: {
-                    scheme: 'brewer.Accent8'
-                },
-            }
-        };
         let myChart = new Chart(ctx, {
             type: 'scatter',
             data: {
@@ -158,6 +96,7 @@
                     data: data,
                 }],
             },
+            //import from js/options.js
             options: options,
         });
 
