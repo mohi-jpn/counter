@@ -104,6 +104,7 @@
 
             document.getElementById('score').innerHTML++;
             history[0].push(time);
+            document.getElementById('reset').disabled = false;
         });
 
         document.getElementById('reset').addEventListener('click', function () {
@@ -113,6 +114,7 @@
             data.length = 0;
             myChart.data.datasets[0].data = data;
             myChart.update();
+            document.getElementById('reset').disabled = true;
         });
 
         document.getElementById('display').addEventListener('click', function () {
