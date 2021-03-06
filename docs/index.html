@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <title>カウンター</title>
@@ -82,15 +83,16 @@
     </div>
 
     <script>
+        const MAX_HISTORY = 3;
         const ctx = document.getElementById("myChart");
-        let history = [];
+        let history = [[]];
         let data = [];
         const options = {
             title: {
                 display: false,
             },
             legend: {
-                display: false,
+                display: true,
             },
             tooltips: {
                 callbacks: {
@@ -113,7 +115,6 @@
                     },
                     ticks: {
                         fontColor: '#333',
-                        min: 0,
                     },
                 }],
                 yAxes: [{
@@ -121,15 +122,14 @@
                         display: false,
                     },
                     gridLines: {
-                        color: '#ffffff',
                         zeroLineColor: '#ddd',
                         zeroLineWidth: 2,
                     },
                     ticks: {
                         display: false,
-                        fontColor: '#333',
                         min: -5,
                         max: 5,
+                        stepSize: 5,
                     }
                 }]
             },
@@ -144,15 +144,16 @@
                         mode: 'x',
                         sensitivity: 3
                     }
-                }
+                },
+                colorschemes: {
+                    scheme: 'brewer.Accent8'
+                },
             }
         };
         let myChart = new Chart(ctx, {
             type: 'scatter',
             data: {
                 datasets: [{
-                    backgroundColor: 'rgba(255, 48, 32, 0.45)',
-                    borderColor: 'rgba(255, 48, 32, 0.5)',
                     pointRadius: 10,
                     data: data,
                 }],
@@ -164,28 +165,45 @@
             const time = Date.now();
 
             document.getElementById('score').innerHTML++;
-            history.push(time);
+            history[0].push(time);
         });
 
         document.getElementById('reset').addEventListener('click', function () {
+            history.unshift([]);
             document.getElementById('score').innerHTML = 0;
-            history.length = 0;
+            if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
             data.length = 0;
             myChart.data.datasets[0].data = data;
             myChart.update();
         });
 
         document.getElementById('display').addEventListener('click', function () {
-            const start_time = history[0];
-            data = history.map((time) => {
-                return {
-                    x: (time - start_time) / 1000,
-                    y: 0,
-                }
+            let datasets = [];
+            history.forEach((element, index) => {
+                const start_time = element[0];
+                data = element.map((time) => {
+                    return {
+                        x: (time - start_time) / 1000,
+                        y: 0,
+                    }
+                });
+                datasets.push({
+                    label: convertLabel(index),
+                    pointRadius: 10,
+                    data: data,
+                })
             });
-            myChart.data.datasets[0].data = data;
+            myChart.data.datasets = datasets;
             myChart.update();
         });
+
+        const convertLabel = (num) => {
+            if (num === 0){
+                return '最新のやつ'
+            } else {
+                return `${num}つ前のやつ`
+            }
+        }
 
     </script>
 </body>
