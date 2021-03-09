@@ -12,6 +12,7 @@ function onYouTubeIframeAPIReady() {
     videoId: 'nmiZpYb-0Tw',
     playerVars: {
         'modestbranding': 1,
+        'playsinline': 1,
         'rel': 0,
     },
     host: 'https://www.youtube-nocookie.com',
