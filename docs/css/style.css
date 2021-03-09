@@ -2,15 +2,24 @@
 
 .container {
     text-align: center;
-    margin: 30px auto;
+    margin: 10px auto;
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+.btn-toolbar {
+    margin: 10px auto;
 }
 
 .result {
-    font-size: 36px;
+    font-size: 24px;
     font-weight: bold;
     border: 1px solid #ccc;
-    margin: 30px auto;
-    padding: 10px;
+    margin: 10px auto;
     background-color: rgb(252, 252, 252);
     color: rgb(0, 0, 0);
     border-radius: 3px;
