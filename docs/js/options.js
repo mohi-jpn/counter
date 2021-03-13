@@ -38,7 +38,7 @@ const options = {
             },
             ticks: {
                 display: false,
-                min: -5,
+                min: -1,
                 max: 5,
                 stepSize: 5,
             }

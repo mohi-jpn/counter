@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
     <script src="js/options.js"></script>
+    <script src="js/correct_answer.js"></script>
     <script src="js/download.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
@@ -92,7 +93,7 @@
     </div>
 
     <script>
-        const MAX_HISTORY = 3;
+        const MAX_HISTORY = 2;
         const ctx = document.getElementById("myChart");
         let history = [[]];
         let data = [];
@@ -128,12 +129,12 @@
 
         document.getElementById('display').addEventListener('click', function () {
             let datasets = [];
-            history.forEach((element, index) => {
+            [correct_answer].concat(history).forEach((element, index) => {
                 const start_time = element[0];
                 data = element.map((time) => {
                     return {
                         x: (time - start_time) / 1000,
-                        y: 0,
+                        y: index * 2,
                     }
                 });
                 datasets.push({
@@ -147,10 +148,10 @@
         });
 
         const convertLabel = (num) => {
-            if (num === 0){
-                return '最新のやつ'
-            } else {
-                return `${num}つ前のやつ`
+            switch (num) {
+                case 0: return 'correct answer';
+                case 1: return 'latest your answer';
+                case 2: return 'old your answer';
             }
         }
 
