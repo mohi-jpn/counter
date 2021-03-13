@@ -15,11 +15,15 @@
     margin: 10px auto;
 }
 
+.btn-lg {
+    padding: 5% 0;
+}
+
 .result {
     font-size: 24px;
     font-weight: bold;
     border: 1px solid #ccc;
-    margin: 10px auto;
+    margin: 5px auto;
     background-color: rgb(252, 252, 252);
     color: rgb(0, 0, 0);
     border-radius: 3px;
