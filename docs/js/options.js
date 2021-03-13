@@ -44,6 +44,7 @@ const options = {
             }
         }]
     },
+    animation: false,
     plugins: {
         zoom: {
             pan: {

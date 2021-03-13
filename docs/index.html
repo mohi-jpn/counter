@@ -34,52 +34,49 @@
 
         <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
             <div class="btn-group me-2" role="group" aria-label="First group">
-              <button type="button" id="display" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                  グラフ表示
-              </button>
-              <button type="button" id="export" class="btn btn-sm btn-outline-success">
-                  エクスポート
-              </button>
+                <button type="button" id="export" class="btn btn-sm btn-outline-success">エクスポート</button>
             </div>
             <div class="btn-group me-2" role="group" aria-label="Second group">
-              <button type="button" id="reset" class="btn btn-sm btn-outline-secondary">リセット</button>
+                <button type="button" id="reset" class="btn btn-sm btn-outline-secondary">リセット</button>
             </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">カウントタイミング</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-
-              <div>
-                <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
-              </div>
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div id="player" class="ratio ratio-16x9"></div>
         <script src="js/ytb.js"></script>
 
-        <div class="result">
-            <p>スコア</p>
-            <p id="score">0</p>
-        </div>
+        <div class="accordion" id="switchMode">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" id="display" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  レビューモード
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#switchMode">
+                <div class="accordion-body">
+                  <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
+                </div>
+              </div>
+            </div>
 
-        <div class="d-grid gap-2">
-            <button type="button" id="count" class="btn btn-lg btn-primary">タップ</button>
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  練習モード
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#switchMode">
+                <div class="accordion-body">
+                    <div class="result">
+                        <p>スコア</p>
+                        <p id="score">0</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" id="count" class="btn btn-lg btn-primary">タップ</button>
+                    </div>
+                </div>
+              </div>
+            </div>
         </div>
-
     </div>
 
     <hr>
@@ -123,11 +120,15 @@
             if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
             data.length = 0;
             myChart.data.datasets[0].data = data;
-            myChart.update();
+            displayGraph();
             document.getElementById('reset').disabled = true;
         });
 
         document.getElementById('display').addEventListener('click', function () {
+            displayGraph();
+        });
+
+        const displayGraph = () => {
             let datasets = [];
             [correct_answer].concat(history).forEach((element, index) => {
                 const start_time = element[0];
@@ -145,7 +146,7 @@
             });
             myChart.data.datasets = datasets;
             myChart.update();
-        });
+        }
 
         const convertLabel = (num) => {
             switch (num) {
