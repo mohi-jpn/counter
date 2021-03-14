@@ -129,7 +129,7 @@
 
         const displayGraph = () => {
             let datasets = [];
-            [correct_answer].concat(history).forEach((element, index) => {
+            correct_answer.concat(history).forEach((element, index) => {
                 const start_time = element[0];
                 data = element.map((time) => {
                     return {
