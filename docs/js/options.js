@@ -58,7 +58,7 @@ const options = {
             }
         },
         colorschemes: {
-            scheme: 'brewer.Accent8'
+            scheme: 'office.Angles6'
         },
     }
 };
