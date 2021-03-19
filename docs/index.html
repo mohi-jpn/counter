@@ -52,6 +52,12 @@
               </h2>
               <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#switchMode">
                 <div class="accordion-body">
+
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                    </div>
+
                   <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
                 </div>
               </div>
@@ -128,30 +134,33 @@
             if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
             data.length = 0;
             myChart.data.datasets[0].data = data;
-            displayGraph();
+            displayScatterGraph();
             document.getElementById('reset').disabled = true;
         });
 
         document.getElementById('display').addEventListener('click', function () {
+            document.getElementById('flexSwitchCheckDefault').checked = false;
             player.pauseVideo();
             player.setPlaybackRate(0.25);
-            displayGraph();
+            displayScatterGraph();
         });
 
         document.getElementById('practice').addEventListener('click', function () {
             player.setPlaybackRate(1);
         });
 
-        const displayGraph = () => {
+        document.getElementById('flexSwitchCheckDefault').addEventListener('change', function () {
+            if (document.getElementById('flexSwitchCheckDefault').checked) {
+                displayLineGraph();
+            } else {
+                displayScatterGraph();
+            }
+        });
+
+        const displayScatterGraph = () => {
             let datasets = [];
             correct_answer.concat(history).forEach((element, index) => {
-                const start_time = element[0];
-                data = element.map((time) => {
-                    return {
-                        x: (time - start_time) / 1000,
-                        y: index * 2,
-                    }
-                });
+                data = toRelativeTime(element, index);
                 datasets.push({
                     label: convertLabel(index),
                     pointRadius: 5,
@@ -159,7 +168,37 @@
                     data: data,
                 })
             });
+            myChart.type = 'scatter';
             myChart.data.datasets = datasets;
+            myChart.options.legend.display = true;
+            myChart.update();
+        }
+
+        const displayLineGraph = () => {
+            let datasets = [];
+            let tmp_datasets = [];
+            correct_answer.concat(history).forEach((element, index) => {
+                data = toRelativeTime(element, index);
+                tmp_datasets.push(data);
+            });
+            const LENGTHS = tmp_datasets.map(e => e.length);
+            const MAX_ID = LENGTHS.indexOf(Math.max(...LENGTHS));
+            const CONVERT_DATA = tmp_datasets[MAX_ID].map((_, c) => {
+                return tmp_datasets.map(r => r[c]).filter(v => v)
+            });
+            CONVERT_DATA.forEach(e => {
+                datasets.push({
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    data: e,
+                    showLine: true,
+                    fill: false,
+                    lineTension: 0,
+                })
+            })
+            myChart.type = 'line';
+            myChart.data.datasets = datasets;
+            myChart.options.legend.display = false;
             myChart.update();
         }
 
@@ -169,6 +208,16 @@
                 case 1: return 'latest your answer';
                 case 2: return 'old your answer';
             }
+        }
+
+        const toRelativeTime = (answer, index) => {
+            const start_time = answer[0];
+            return answer.map((time) => {
+                return {
+                    x: (time - start_time) / 1000,
+                    y: index * 2,
+                }
+            });
         }
 
     </script>
