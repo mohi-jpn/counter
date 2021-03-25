@@ -8,6 +8,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 //  after the API code downloads.
 const START_TIME = 6.6;
 let player;
+let videotime=0;
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('player', {
     videoId: 'nmiZpYb-0Tw',
@@ -17,5 +18,23 @@ function onYouTubeIframeAPIReady() {
         'rel': 0,
     },
     host: 'https://www.youtube-nocookie.com',
+    events: {
+      'onStateChange': onPlayerStateChange
+    },
   });
+}
+
+function onPlayerStateChange(event) {
+  if (event.data == 1) {
+    function updateTime() {
+      let oldTime = videotime;
+      if (player && player.getCurrentTime) {
+        videotime = player.getCurrentTime().toFixed(3);
+      }
+      if (videotime !== oldTime) {
+        document.getElementById('playerTime').innerHTML = videotime;
+      }
+    }
+    timeupdater = setInterval(updateTime, 100);
+  }
 }
