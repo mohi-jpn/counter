@@ -2,9 +2,10 @@ window.addEventListener('load', () => {
     const download = document.getElementById('export');
     download.addEventListener('click', download_clicked);
 });
-  
+
 function download_clicked(evt) {
     const EXPORT_DATA = JSON.stringify(history, null, 2);
+    //const EXPORT_DATA = JSON.stringify(historyReview, null, 2);
     evt.preventDefault();
 
     const blob = new Blob([EXPORT_DATA], {type: 'text/plain'});

@@ -64,7 +64,7 @@
                         </div>
                     </div>
 
-                  <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
+                    <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
                 </div>
               </div>
             </div>
@@ -103,6 +103,9 @@
         const MAX_HISTORY = 2;
         const ctx = document.getElementById("myChart");
         let history = [[]];
+        //following vars are used in creating correct_answer
+        //let historyReview = [[]];
+        //const REVIEW_START = Date.now();
         let data = [];
         let myChart = new Chart(ctx, {
             type: 'scatter',
@@ -117,7 +120,7 @@
             options: options,
         });
 
-       ctx.addEventListener('click', function(event) {
+        ctx.addEventListener('click', function(event) {
           let item = myChart.getElementAtEvent(event);
           if (item.length == 0) return;
 
@@ -162,6 +165,16 @@
                 displayScatterGraph();
             }
         });
+
+
+        //NOTE:
+        //When you create the correct_answer by review mode,
+        //use following procedure with button (id="countReview"),
+        //and see download.js
+        //
+        //document.getElementById('countReview').addEventListener('click', function () {
+        //            historyReview[0].push(Number(videotime)*1000 + REVIEW_START);
+        //});
 
         const displayScatterGraph = () => {
             let datasets = [];
