@@ -6,87 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@0.7.7"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-colorschemes"></script>
-    <script src="js/options.js"></script>
-    <script src="js/correct_answer.js"></script>
-    <script src="js/download.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="css/style.css">
-    <title>カウンター</title>
+    <title>ジャッジトレーニング</title>
 </head>
 
 <body>
     <div class="container">
         <header>
-            <h1>カウンター</h1>
+            <h1>
+                <a href="./index.html">ジャッジトレーニング</a>
+            </h1>
         </header>
     </div>
 
     <div class="container">
-
-        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-            <div class="btn-group me-2" role="group" aria-label="First group">
-                <button type="button" id="export" class="btn btn-sm btn-outline-success">エクスポート</button>
-            </div>
-            <div class="btn-group me-2" role="group" aria-label="Second group">
-                <button type="button" id="reset" class="btn btn-sm btn-outline-secondary">リセット</button>
-            </div>
-        </div>
-
-        <div id="player" class="ratio ratio-16x9"></div>
-        <script src="js/ytb.js"></script>
-
-        <div class="accordion" id="switchMode">
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" id="display" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  レビューモード
-                </button>
-              </h2>
-              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#switchMode">
-                <div class="accordion-body">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                          <p id="playerTime">0</p>
-                        </div>
-                    </div>
-
-                    <canvas id="myChart" style="-webkit-tap-highlight-color: transparent"></canvas>
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item">
-              <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" id="practice" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  練習モード
-                </button>
-              </h2>
-              <div id="collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo" data-bs-parent="#switchMode">
-                <div class="accordion-body">
-                    <div class="result">
-                        <p id="score">0</p>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="button" id="count" class="btn btn-lg btn-primary">カウント</button>
-                    </div>
-                </div>
-              </div>
-            </div>
-        </div>
+        <div id="cards"></div>
+        <script src="js/toppage.js"></script>
     </div>
 
     <hr>
@@ -99,147 +41,6 @@
         </footer>
     </div>
 
-    <script>
-        const MAX_HISTORY = 2;
-        const ctx = document.getElementById("myChart");
-        let history = [[]];
-        //following vars are used in creating correct_answer
-        //let historyReview = [[]];
-        //const REVIEW_START = Date.now();
-        let data = [];
-        let myChart = new Chart(ctx, {
-            type: 'scatter',
-            data: {
-                datasets: [{
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    data: data,
-                }],
-            },
-            //import from js/options.js
-            options: options,
-        });
-
-        ctx.addEventListener('click', function(event) {
-          let item = myChart.getElementAtEvent(event);
-          if (item.length == 0) return;
-
-          item = item[0];
-          let data = item._chart.config.data.datasets[item._datasetIndex].data[item._index];
-          player.seekTo(START_TIME + data.x);
-        });
-
-        document.getElementById('count').addEventListener('click', function () {
-            const time = Date.now();
-
-            document.getElementById('score').innerHTML++;
-            history[0].push(time);
-            document.getElementById('reset').disabled = false;
-        });
-
-        document.getElementById('reset').addEventListener('click', function () {
-            history.unshift([]);
-            document.getElementById('score').innerHTML = 0;
-            if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
-            data.length = 0;
-            myChart.data.datasets[0].data = data;
-            displayScatterGraph();
-            document.getElementById('reset').disabled = true;
-        });
-
-        document.getElementById('display').addEventListener('click', function () {
-            document.getElementById('flexSwitchCheckDefault').checked = false;
-            player.pauseVideo();
-            player.setPlaybackRate(0.25);
-            displayScatterGraph();
-        });
-
-        document.getElementById('practice').addEventListener('click', function () {
-            player.setPlaybackRate(1);
-        });
-
-        document.getElementById('flexSwitchCheckDefault').addEventListener('change', function () {
-            if (document.getElementById('flexSwitchCheckDefault').checked) {
-                displayLineGraph();
-            } else {
-                displayScatterGraph();
-            }
-        });
-
-
-        //NOTE:
-        //When you create the correct_answer by review mode,
-        //use following procedure with button (id="countReview"),
-        //and see download.js
-        //
-        //document.getElementById('countReview').addEventListener('click', function () {
-        //            historyReview[0].push(Number(videotime)*1000 + REVIEW_START);
-        //});
-
-        const displayScatterGraph = () => {
-            let datasets = [];
-            correct_answer.concat(history).forEach((element, index) => {
-                data = toRelativeTime(element, index);
-                datasets.push({
-                    label: convertLabel(index),
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    data: data,
-                })
-            });
-            myChart.type = 'scatter';
-            myChart.data.datasets = datasets;
-            myChart.options.legend.display = true;
-            myChart.update();
-        }
-
-        const displayLineGraph = () => {
-            let datasets = [];
-            let tmp_datasets = [];
-            correct_answer.concat(history).forEach((element, index) => {
-                data = toRelativeTime(element, index);
-                tmp_datasets.push(data);
-            });
-            const LENGTHS = tmp_datasets.map(e => e.length);
-            const MAX_ID = LENGTHS.indexOf(Math.max(...LENGTHS));
-            const CONVERT_DATA = tmp_datasets[MAX_ID].map((_, c) => {
-                return tmp_datasets.map(r => r[c]).filter(v => v)
-            });
-            CONVERT_DATA.forEach(e => {
-                datasets.push({
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    data: e,
-                    showLine: true,
-                    fill: false,
-                    lineTension: 0,
-                })
-            })
-            myChart.type = 'line';
-            myChart.data.datasets = datasets;
-            myChart.options.legend.display = false;
-            myChart.update();
-        }
-
-        const convertLabel = (num) => {
-            switch (num) {
-                case 0: return 'correct answer';
-                case 1: return 'latest your answer';
-                case 2: return 'old your answer';
-            }
-        }
-
-        const toRelativeTime = (answer, index) => {
-            const start_time = answer[0];
-            return answer.map((time) => {
-                return {
-                    x: (time - start_time) / 1000,
-                    y: index * 2,
-                }
-            });
-        }
-
-    </script>
 </body>
 
 </html>
